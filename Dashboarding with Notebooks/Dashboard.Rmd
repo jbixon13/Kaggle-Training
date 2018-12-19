@@ -1,0 +1,40 @@
+---
+title: 'Dashboarding with Notebooks: NYC Housing Authority'
+output:
+  html_document:
+    df_print: paged
+---
+
+**A weekly-updated dashboard to identify structural patterns in New York City Public Housing.**  
+
+```{r message=FALSE, echo=FALSE}
+library(tidyverse)
+library(plotly)
+```
+
+```{r message=FALSE, echo=FALSE}
+# read in borough summary data 
+summary <- read_csv('nycha-resident-data-book-summary.csv')
+```
+
+```{r message=FALSE, echo=FALSE}
+# light data cleaning 
+summary <- summary %>% 
+slice(22:35)
+```
+
+
+```{r echo=FALSE, fig.width=10}
+p <- summary %>% 
+  ggplot(aes(x = PROGRAM, y = `Total Families`)) + 
+  geom_bar(stat = 'identity', aes(fill = STATECITY_SECTION8_FLAG)) +
+  scale_fill_brewer('Blues', name = 'Household Type') + 
+  ylab('Total Families') +
+  xlab('Borough') +
+  theme(legend.position = 'top') + 
+  theme_classic() 
+
+ggplotly(p) %>% 
+  layout(title = 'Households by Housing Type and Borough')
+```
+
